@@ -71,3 +71,59 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+### WebHook in react and how to use it 
+
+##### WebHook in react
+
+```javascript
+import { useEffect, useState } from "react";
+import { WebSocketClientService } from "@/kafka/consumer";
+
+export interface IWebSocketEvent {
+  name: string;
+  fn: any;
+}
+
+const useWebSocketEvents = (eventsList: IWebSocketEvent[]) => {
+  const [consumer] = useState(() => new WebSocketClientService());
+  const [events, setEvents] = useState<IWebSocketEvent[]>(eventsList);
+
+  useEffect(() => {
+    consumer.subscribeToEvents(events);
+    return () => {
+      consumer.unSubscribeToEvents(events);
+    };
+  }, [events, consumer]);
+
+  return [events, setEvents] as const;
+};
+
+export default useWebSocketEvents;
+```
+
+
+##### Example how to use the webhook
+
+```javascript
+const [events, setEvents] = useWebSocketEvents([
+    {
+      name: "indexDeletion",
+      fn: (eventName: IWebSocketEvent["name"], data: IWebSocketEvent) =>
+        console.log(`Web Received event'${eventName}':`, data),
+    },
+    {
+      name: "indexCreation",
+      fn: (eventName: IWebSocketEvent["name"], data: IWebSocketEvent) =>
+        console.log(`Web Received event'${eventName}':`, data),
+    },
+    {
+      name: "settingsUpdate",
+      fn: (eventName: IWebSocketEvent["name"], data: IWebSocketEvent) =>
+        console.log(`Web Received event'${eventName}':`, data),
+    },
+  ]);
+```
+
+
+

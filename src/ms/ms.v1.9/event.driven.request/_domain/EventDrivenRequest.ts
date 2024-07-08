@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { IEventDrivenRequest } from './IEventDrivenRequest';
 import { MsTaskListTypes } from './MsTaskTypes';
 
@@ -10,7 +9,6 @@ export class EventDrivenRequest implements IEventDrivenRequest {
       }
     }
   }
-  _id?: Types.ObjectId;
   taskUid: number;
   indexUid?: string;
   status: string;
